@@ -29,7 +29,6 @@ io.on('connection', socket => {
     socket.on('sendMsg', info => {
         console.log(info);
         arrayMsg.push(info)
-
         socket.broadcast.emit('msgRecebida', info)
     })
 })
