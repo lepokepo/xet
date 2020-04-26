@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xet do tinder</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        var nome
+        var cont = 0
+
+        nome = window.prompt('Escreva seu nome')
+        if (nome == null || nome == '') {
+            nome = 'Anônimo' + cont
+            cont++
+        }
+
+        function mostraMsg(param) {
+            $('#mensagens').append('<div class="msg-field"><span>' + param.nome + ': ' +
+                param.mensagem + '</span></div>')
+        }
+
+    </script>
+    <style>
+        .msg-field {
+            min-height: 30px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body onload="">
+    <div style="margin: 3%;">
+        <span style="color:rgb(61, 61, 61); font-size:45px;">xet do tinder</span>
+
+        <div id="mensagens" style="border-radius: 2px;padding: 1% ;border: 3px solid
+         rgb(61, 61, 61);overflow: auto;height: 450px;">
+        </div>
+        <div style="border-radius: 2px;min-height: 30px;border: 3px solid rgb(61, 61, 61); border-top: none;">
+            <form id="fieldSend">
+                <input id="msgInput" autocomplete="off" style="width: 95%; font-size: 25px!important;" class="msg-field"
+                    type="text" placeholder="Digite algo aqui...">
+                <button id="msgEnvia" type="submit" style="width: 4%;" class="msg-field">></button>
+            </form>
+        </div>
+    </div>
+
+
+    <script text='text/javascript'>
+        var socket = io('http://localhost')
+
+        socket.on('msgRecebida', function (mensagem) {
+            mostraMsg(mensagem)
+        })
+
+        $('#fieldSend').submit(function (event) {
+            event.preventDefault()
+            var mensagemTx = document.getElementById('msgInput')
+            if (mensagemTx.value != null && mensagemTx.value != '') {
+                var sendObj = {
+                    nome: nome,
+                    mensagem: mensagemTx.value,
+                }
+                console.log();
+                socket.emit('sendMsg', sendObj)
+                mostraMsg(sendObj)
+            }
+            mensagemTx.value = ""
+        })
+
+    </script>
+</body>
+
+</html>
